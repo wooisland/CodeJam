@@ -10,13 +10,12 @@
 #include <stdlib.h>
 #include <sstream>
 #include <vector>
-
 #include <string>
 
 using namespace std;
 
 
-int RationalNumber(long location, long&p, long &q)
+int RationalNumber(unsigned long long location, unsigned long long&p, unsigned long long &q)
 {
 	if (location == 1)
 	{
@@ -24,7 +23,7 @@ int RationalNumber(long location, long&p, long &q)
 	}
 	else
 	{
-		long parentP, parentQ;
+		unsigned long long parentP, parentQ;
 		RationalNumber(location/2, parentP, parentQ);
 
 		if (location % 2 == 0)
@@ -42,90 +41,66 @@ int RationalNumber(long location, long&p, long &q)
 	return 0;
 }
 
-int RationalLocation(long p, long q, long &location)
+int RationalLocation(unsigned long long p, unsigned long long q, unsigned long long &location)
 {
+
 	location = 0;
+	unsigned long long preLocation;
 
-	long currentP, currentQ;
-
-	do
+	if (p < q)
 	{
-		location++;
-		RationalNumber(location,currentP,currentQ);
+		RationalLocation(p, q - p, preLocation);
+
+		location = 2 * preLocation;
 	}
-	while(currentP != p || currentQ != q);
+	else if ( p > q)
+	{
+		RationalLocation(p - q, q, preLocation);
+
+		location = 2 * preLocation + 1;
+	}
+	else if ( p == q)
+	{
+		location = 1;
+	}
 
 	return 0;
 }
 
+void Solve()
+{
+	unsigned long long input_number;
+	scanf("%llu", &input_number);
+
+	unsigned long long postion, p, q;
+	
+	if (input_number == 1)
+	{
+		scanf("%llu", &postion);
+		RationalNumber(postion, p, q);
+		printf("%llu %llu", p, q);
+	
+	}
+	else if (input_number == 2)
+	{
+		scanf("%llu", &p);
+		scanf("%llu", &q);
+		RationalLocation(p,q,postion);
+		printf("%llu", postion);
+	}
+}
+
 int main(int argc, char* argv[])
 {
+	int case_count;
 
-	string inputFile = "B-large-practice.in";
-	string outputFile = "B-large-practice.out";
+	scanf("%d", &case_count);
 
-	switch(argc)
+	for (int i = 0; i < case_count; ++i)
 	{
-		case 2:
-			inputFile = string(argv[1]);
-			break;
-		case 3:
-			inputFile = string(argv[1]);
-			outputFile = string(argv[2]);
-			break;
-		default:
-			break;
+		printf("Case #%d: ", i + 1);
+		Solve();
+		printf("\n");
 	}
-
-	ifstream input;
-	input.open(inputFile);
-
-	ofstream output;
-	output.open(outputFile);
-
-	if (!input)
-	{
-		cerr<< "error:unable to open input file" << inputFile << endl;
-		return -1;
-	}
-
-	string str_case_number;
-	input >> str_case_number;
-
-	int case_number = atoi(str_case_number.c_str());
-    string s;
-
-    string var1, var2;
-   	string inputCount;
-
-
-   	long p, q;
-   	long location;
-
-
-   	int i = 1;
-    while( i <= case_number)
-    {
-    	input >> inputCount;
-
-    	if ( atoi(inputCount.c_str()) == 1)
-    	{
-    	 	input >> var1;
-    	 	RationalNumber(atoi(var1.c_str()), p, q);
-    	 	output << "Case #" << i << ": "<< p <<" " << q << endl ;
-
-    	}
-    	else if ( atoi(inputCount.c_str()) == 2)
-    	{
-    		input >> var1 >> var2;
-    		RationalLocation(atoi(var1.c_str()), atoi(var2.c_str()), location);
-    		output << "Case #" << i << ": " << location << endl;
-    	}
-    	i++;
-    }
-
-    input.close();
-    output.flush();
-    output.close();
 
 }
